@@ -4,24 +4,43 @@
 # UPI: 8476927
 
 import sys
+import operator
+import socket
 
-def main(ss):
+def anagram(data):
     res = dict()
+    ss = sorted(data)
     for s in ss:
-        res[s] = sorted(s)
+        key = ''.join(sorted(s))
+        if not key in res.keys():
+            res[key] = [s]
+        else:
+            res[key].append(s)
+    pprint(res)       
+
+def pprint(res):    
     pre_key = None
-    for v in sorted(res, key=res.get, reverse=True):
-        if pre_key == None:
-            pre_key = sorted(v)
-        if sorted(v) == pre_key:
-            print(v)
-        else:            
-            print("\n",v)
-        pre_key = sorted(v)           
-        
+    for k, v in sorted(res.items(),key=operator.itemgetter(1)):
+        if k != '' and v != '':
+            print(' '.join(v)) 
+
+def send_data_tcp(message):
+    # Create a TCP/IP socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    try:
+        # Connect the socket to the port where the server is listening
+        sock.connect(('115.188.34.161', 10000))
+   
+        # Send data
+        sock.send(bytes(message, 'UTF-8'))
+    except socket.error:
+    sock.close()    
+            
 if __name__ == '__main__':
     input = sys.stdin.read()
     data = input.split('\n')
     for d in data:
-        print(main(d.split(' ')))
-        print("\n")
+        if d != '':
+            anagram(d.split(' '))
+            print()
+    send_data_tcp(input)        

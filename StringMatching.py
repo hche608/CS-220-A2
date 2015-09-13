@@ -4,9 +4,8 @@
 # UPI: 8476927
 
 import sys
-# @param {string} s
-# @param {string} t
-# @return {boolean}
+import socket
+
 def idf(s, t):
         res = dict()
         for i in range(len(s)):
@@ -21,8 +20,20 @@ def idf(s, t):
 # @return {boolean}        
 def isIsomorphic(s, t):
     if len(s)!=len(t):
-        return False
-    return idf(s, t) #and idf(t, s)
+        return False    
+    return idf(s, t) and idf(t, s)
+
+def send_data_tcp(message):
+    # Create a TCP/IP socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Connect the socket to the port where the server is listening
+    try:
+        sock.connect(('115.188.34.161', 10000))   
+        # Send data
+        sock.send(bytes(message, 'UTF-8'))
+    except socket.error:
+        sock.close()  
         
 if __name__ == '__main__':
     input = sys.stdin.read()
@@ -31,3 +42,4 @@ if __name__ == '__main__':
         res = d.split(' ')
         if (len(res) == 2):
             print(isIsomorphic(res[0], res[1]))
+    send_data_tcp(input)          
